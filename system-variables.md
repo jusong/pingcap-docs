@@ -1037,6 +1037,7 @@ mysql> SHOW GLOBAL VARIABLES LIKE 'max_prepared_stmt_count';
 - Scope: SESSION | GLOBAL
 - Persists to cluster: Yes
 - Applies to hint [SET_VAR](/optimizer-hints.md#set_varvar_namevar_value): No
+- Type: Integer
 - Default value: `4096`
 - Range: `[0, 9223372036854775807]`
 - Unit: Bytes
@@ -1122,10 +1123,6 @@ MPP is a distributed computing framework provided by the TiFlash engine, which a
 - This variable is used to set the concurrency of the `scan` operation when executing the `ANALYZE` operation.
 
 ### tidb_analyze_partition_concurrency
-
-> **Warning:**
->
-> The feature controlled by this variable is not fully functional in the current TiDB version. Do not change the default value.
 
 - Scope: SESSION | GLOBAL
 - Persists to cluster: Yes
@@ -2012,19 +2009,6 @@ mysql> SELECT job_info FROM mysql.analyze_jobs ORDER BY end_time DESC LIMIT 1;
 - Default value: `OFF`
 - This variable controls whether to enable TiDB to collect `PREDICATE COLUMNS`. After enabling the collection, if you disable it, the information of previously collected `PREDICATE COLUMNS` is cleared. For details, see [Collect statistics on some columns](/statistics.md#collect-statistics-on-some-columns).
 
-### tidb_enable_concurrent_hashagg_spill <span class="version-mark">New in v8.0.0</span>
-
-> **Warning:**
->
-> Currently, the feature controlled by this variable is experimental. It is not recommended that you use it in production environments. If you find a bug, you can report an [issue](https://github.com/pingcap/tidb/issues) on GitHub.
-
-- Scope: SESSION | GLOBAL
-- Persists to cluster: Yes
-- Applies to hint [SET_VAR](/optimizer-hints.md#set_varvar_namevar_value): No
-- Type: Boolean
-- Default value: `ON`
-- This variable controls whether TiDB supports disk spill for the concurrent HashAgg algorithm. When it is `ON`, disk spill can be triggered for the concurrent HashAgg algorithm. This variable will be deprecated after this feature is generally available in a future release.
-
 ### tidb_enable_enhanced_security
 
 - Scope: NONE
@@ -2410,6 +2394,19 @@ mysql> SELECT job_info FROM mysql.analyze_jobs ORDER BY end_time DESC LIMIT 1;
 - Default value: `OFF`
 - This variable controls whether to enable concurrency for the `Apply` operator. The number of concurrencies is controlled by the `tidb_executor_concurrency` variable. The `Apply` operator processes correlated subqueries and has no concurrency by default, so the execution speed is slow. Setting this variable value to `1` can increase concurrency and speed up execution. Currently, concurrency for `Apply` is disabled by default.
 
+### tidb_enable_parallel_hashagg_spill <span class="version-mark">New in v8.0.0</span>
+
+> **Warning:**
+>
+> Currently, the feature controlled by this variable is experimental. It is not recommended that you use it in production environments. If you find a bug, you can report an [issue](https://github.com/pingcap/tidb/issues) on GitHub.
+
+- Scope: SESSION | GLOBAL
+- Persists to cluster: Yes
+- Applies to hint [SET_VAR](/optimizer-hints.md#set_varvar_namevar_value): No
+- Type: Boolean
+- Default value: `ON`
+- This variable controls whether TiDB supports disk spill for the parallel HashAgg algorithm. When it is `ON`, disk spill can be triggered for the parallel HashAgg algorithm. This variable will be deprecated after this feature is generally available in a future release.
+
 ### tidb_enable_pipelined_window_function
 
 - Scope: SESSION | GLOBAL
@@ -2774,6 +2771,8 @@ Query OK, 0 rows affected (0.09 sec)
 - This variable is used to control whether to enable the [TiCDC data integrity validation for single-row data](https://docs.pingcap.com/tidb/stable/ticdc-integrity-check) feature.
 
 </CustomContent>
+
+- You can use the [`TIDB_ROW_CHECKSUM()`](/functions-and-operators/tidb-functions.md#tidb_row_checksum) function to get the checksum value of a row.
 
 ### tidb_enforce_mpp <span class="version-mark">New in v5.1</span>
 
@@ -6249,7 +6248,7 @@ Internally, the TiDB parser transforms the `SET TRANSACTION ISOLATION LEVEL [REA
 - Scope: NONE
 - Applies to hint [SET_VAR](/optimizer-hints.md#set_varvar_namevar_value): No
 - Default value: `8.0.11-TiDB-`(tidb version)
-- This variable returns the MySQL version, followed by the TiDB version. For example '8.0.11-TiDB-v8.0.0'.
+- This variable returns the MySQL version, followed by the TiDB version. For example '8.0.11-TiDB-v8.1.0'.
 
 ### version_comment
 
